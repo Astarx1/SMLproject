@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, sys.path[0][0:-3]) #added
+
 from board import Board
 
 
@@ -11,20 +14,22 @@ class IllegalMove(Exception):
 
 class HexBoard(Board):
     def __init__(self):
-        Board.__init__(self, 9)
+        Board.__init__(self, 3)
+        
 
     def next_legal_moves(self):
         moves = []
         for i in range(self.board_size):
             for j in range(self.board_size):
                 if self.matrix[i][j] == 0:
-                    moves.append((i, j))
+                    moves.append([i, j]) #chgt
         return moves
 
     def play_move(self, move):
         if self.board_size > move[1] >= 0 and self.board_size > move[2] >= 0:
             if self.matrix[move[1]][move[2]] == 0:
                 self.matrix[move[1]][move[2]] = move[0]
+                self.moves_list.append(move) #added
             else:
                 raise IllegalMove
         else:
@@ -42,7 +47,7 @@ class HexBoard(Board):
                     break
 
                 for l in line:
-                    for j in range(max(0, l-1), min(self.board_size, l+2)):
+                    for j in range(max(0, l-1), min(self.board_size, l)): #chgt
                         if self.matrix[i][j] == WHITE:
                             nl.append(j)
 
@@ -62,7 +67,7 @@ class HexBoard(Board):
                     break
 
                 for l in line:
-                    for j in range(max(0, l-1), min(self.board_size, l+2)):
+                    for j in range(max(0, l-1), min(self.board_size, l)): #chgt
                         if self.matrix[j][i] == BLACK:
                             nl.append(j)
 
@@ -71,3 +76,15 @@ class HexBoard(Board):
 
             if len(line) > 0:
                 self.win = BLACK
+                
+                
+                
+                
+    def isWinner(self, player): #added (not really necessary
+        win = False
+        if self.win == player:
+            win = True
+        return win
+        
+    
+    

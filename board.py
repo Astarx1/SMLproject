@@ -8,6 +8,7 @@ class Board:
         self.board_size = board_size
         self.matrix = np.zeros((board_size, board_size), dtype=int)
         self.win = 0
+        self.moves_list = [] #added
 
     def get_clone(self):
         return copy.deepcopy(self)
