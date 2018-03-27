@@ -14,7 +14,7 @@ class IllegalMove(Exception):
 
 class HexBoard(Board):
     def __init__(self):
-        Board.__init__(self, 3)
+        Board.__init__(self, 9)
         
 
     def next_legal_moves(self):
@@ -47,7 +47,7 @@ class HexBoard(Board):
                     break
 
                 for l in line:
-                    for j in range(max(0, l-1), min(self.board_size, l)): #chgt
+                    for j in range(max(0, l-1), min(self.board_size, l+1)): #chgt
                         if self.matrix[i][j] == WHITE:
                             nl.append(j)
 
@@ -67,7 +67,7 @@ class HexBoard(Board):
                     break
 
                 for l in line:
-                    for j in range(max(0, l-1), min(self.board_size, l)): #chgt
+                    for j in range(max(0, l-1), min(self.board_size, l+1)): #chgt
                         if self.matrix[j][i] == BLACK:
                             nl.append(j)
 
