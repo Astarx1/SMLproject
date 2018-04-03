@@ -50,7 +50,7 @@ class HexBoard(Board):
             cur_line.append([])
             for i in range(self.board_size):
                 if self.matrix[0][i] == WHITE:
-                    print("init : " + str(i))
+                    #print("init : " + str(i))
                     (cur_line[0]).append(i)
 
             for i in range(1, self.board_size):
@@ -59,52 +59,73 @@ class HexBoard(Board):
 
                 cur_line.append([])
                 neighbors = []
-                print("Looking for neighbors in line " + str(i-1) + " : " + str(cur_line[i-1]))
+                #print("Looking for neighbors in line " + str(i-1) + " : " + str(cur_line[i-1]))
                 for y in cur_line[i-1]:
                     if y > 0:
                         if self.matrix[i-1][y-1] == WHITE and y-1 not in cur_line[i-1]:
-                            print("found neighbour line " + str(i) + " : " + str(y-1))
+                            #print("found neighbour line " + str(i) + " : " + str(y-1))
                             neighbors.append(y-1)
                     if y+1 < BOARD_SIZE:
                         if self.matrix[i-1][y+1] == WHITE and y+1 not in cur_line[i-1]:
-                            print("found neighbour line " + str(i) + " : " + str(y+1))
+                            #print("found neighbour line " + str(i) + " : " + str(y+1))
                             neighbors.append(y+1)
                 cur_line[i-1] = neighbors + cur_line[i-1]
 
-                print("Looking for points from line " + str(i-1) + " : " + str(cur_line[i-1]))
+                #print("Looking for points from line " + str(i-1) + " : " + str(cur_line[i-1]))
                 for y in cur_line[i-1]:
                     if self.matrix[i][y] == WHITE and y not in cur_line[i]:
-                        print("found point line " + str(i) + " : " + str(y))
+                        #print("found point line " + str(i) + " : " + str(y))
                         cur_line[i].append(y)
                     if y+1 < BOARD_SIZE:
                         if self.matrix[i][y+1] == WHITE and y+1 not in cur_line[i]:
-                            print("found point line " + str(i) + " : " + str(y+1))
+                            #print("found point line " + str(i) + " : " + str(y+1))
                             cur_line[i].append(y+1)
 
 
-                print("Result -> line " + str(i) + " : " + str(cur_line[i]))
+                #print("Result -> line " + str(i) + " : " + str(cur_line[i]))
 
             if len(cur_line) > 10:
                 self.win = WHITE
 
         else:
+            cur_line.append([])
             for i in range(self.board_size):
                 if self.matrix[i][0] == BLACK:
-                    cur_line.append(i)
+                    #print("init : " + str(i))
+                    (cur_line[0]).append(i)
 
             for i in range(1, self.board_size):
-                if len(cur_line) == 0:
+                if len(cur_line[i-1]) == 0:
                     break
 
-                for l in cur_line:
-                    for j in range(max(0, l-1), min(self.board_size, l+1)):
-                        if self.matrix[j][i] == BLACK:
-                            nl.append(j)
+                cur_line.append([])
+                neighbors = []
+                #print("Looking for neighbors in line " + str(i-1) + " : " + str(cur_line[i-1]))
+                for x in cur_line[i-1]:
+                    if x > 0:
+                        if self.matrix[x-1][i-1] == BLACK and x-1 not in cur_line[i-1]:
+                            #print("found neighbour line " + str(i) + " : " + str(x-1))
+                            neighbors.append(x-1)
+                    if x+1 < BOARD_SIZE:
+                        if self.matrix[i-1][x+1] == BLACK and x+1 not in cur_line[i-1]:
+                            #print("found neighbour line " + str(i) + " : " + str(x+1))
+                            neighbors.append(x+1)
+                cur_line[i-1] = neighbors + cur_line[i-1]
 
-                cur_line = nl
-                nl = []
+                #print("Looking for points from line " + str(i-1) + " : " + str(cur_line[i-1]))
+                for x in cur_line[i-1]:
+                    if self.matrix[x][i] == BLACK and x not in cur_line[i]:
+                        #print("found point line " + str(i) + " : " + str(x))
+                        cur_line[i].append(x)
+                    if x+1 < BOARD_SIZE:
+                        if self.matrix[x+1][i] == BLACK and x+1 not in cur_line[i]:
+                            #print("found point line " + str(i) + " : " + str(x+1))
+                            cur_line[i].append(x+1)
 
-            if len(cur_line) > 0:
+
+                #print("Result -> line " + str(i) + " : " + str(cur_line[i]))
+
+            if len(cur_line) > 10:
                 self.win = BLACK
 
     def isWinner(self, player):

@@ -1,14 +1,9 @@
 from test.hex_board import hex_board_test_routine
 from test.hex_ia import hex_IA_test_routine
 from test.hex_game_manager import hex_game_manager_test_routine
+import traceback
 
-
-try:
-    print("Black win test running ...")
-    hex_board_test_routine.test_win_black()
-    print("Black win test OK !")
-except Exception as e:
-    print(e)
+hex_board_test_routine.run()
 
 try:
     print("White win test running ...")

@@ -1,0 +1,4 @@
+Romain 4/3 :
+- Corrected the process of winning decision
+- Separated winning determination and move adding
+- Added more test routines for hex_board about winning determination
