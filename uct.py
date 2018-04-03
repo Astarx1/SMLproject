@@ -35,8 +35,9 @@ class Node:
                        c.proba + Node.UCTK*sqrt(2*log(self.expansions)/c.expansions))[-1]
             if s is not None:
                 if s.move is not None:
-                    print("Node selected : " + str(s.move) + ", " +
-                          str(s.proba + Node.UCTK*sqrt(2*log(self.expansions)/s.expansions)))
+                    pass
+                    #print("Node selected : " + str(s.move) + ", " +
+                    #      str(s.proba + Node.UCTK*sqrt(2*log(self.expansions)/s.expansions)))
             else:
                 print("Move is not None")
             return s
@@ -104,6 +105,6 @@ class UCT:
         begin = datetime.datetime.utcnow()
         while datetime.datetime.utcnow() - begin < self.calculation_time:
             root.expand_node()
-            print("Node expanded !")
+            #print("Node expanded !")
 
 

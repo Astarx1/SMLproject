@@ -15,6 +15,9 @@ class IllegalMove(Exception):
 
 
 class HexBoard(Board):
+    upward_pattern = ((0, 1), (1, 1))
+    upward_neighbors = ((1, 0), (-1, 0))
+
     def __init__(self):
         Board.__init__(self, BOARD_SIZE)
 
@@ -40,46 +43,68 @@ class HexBoard(Board):
         else:
             raise IllegalMove
 
-        line = []
+    def find_if_winner(self, move):
+        cur_line = []
         nl = []
         if move[0] == WHITE:
+            cur_line.append([])
             for i in range(self.board_size):
                 if self.matrix[0][i] == WHITE:
-                    line.append(i)
+                    print("init : " + str(i))
+                    (cur_line[0]).append(i)
 
             for i in range(1, self.board_size):
-                if len(line) == 0:
+                if len(cur_line[i-1]) == 0:
                     break
 
-                for l in line:
-                    for j in range(max(0, l-1), min(self.board_size, l+1)):
-                        if self.matrix[i][j] == WHITE:
-                            nl.append(j)
+                cur_line.append([])
+                neighbors = []
+                print("Looking for neighbors in line " + str(i-1) + " : " + str(cur_line[i-1]))
+                for y in cur_line[i-1]:
+                    if y > 0:
+                        if self.matrix[i-1][y-1] == WHITE and y-1 not in cur_line[i-1]:
+                            print("found neighbour line " + str(i) + " : " + str(y-1))
+                            neighbors.append(y-1)
+                    if y+1 < BOARD_SIZE:
+                        if self.matrix[i-1][y+1] == WHITE and y+1 not in cur_line[i-1]:
+                            print("found neighbour line " + str(i) + " : " + str(y+1))
+                            neighbors.append(y+1)
+                cur_line[i-1] = neighbors + cur_line[i-1]
 
-                line = nl
-                nl = []
+                print("Looking for points from line " + str(i-1) + " : " + str(cur_line[i-1]))
+                for y in cur_line[i-1]:
+                    if self.matrix[i][y] == WHITE and y not in cur_line[i]:
+                        print("found point line " + str(i) + " : " + str(y))
+                        cur_line[i].append(y)
+                    if y+1 < BOARD_SIZE:
+                        if self.matrix[i][y+1] == WHITE and y+1 not in cur_line[i]:
+                            print("found point line " + str(i) + " : " + str(y+1))
+                            cur_line[i].append(y+1)
 
-            if len(line) > 0:
+
+                print("Result -> line " + str(i) + " : " + str(cur_line[i]))
+
+            if len(cur_line) > 10:
                 self.win = WHITE
 
         else:
             for i in range(self.board_size):
                 if self.matrix[i][0] == BLACK:
-                    line.append(i)
+                    cur_line.append(i)
 
             for i in range(1, self.board_size):
-                if len(line) == 0:
+                if len(cur_line) == 0:
                     break
 
-                for l in line:
+                for l in cur_line:
                     for j in range(max(0, l-1), min(self.board_size, l+1)):
                         if self.matrix[j][i] == BLACK:
                             nl.append(j)
 
-                line = nl
+                cur_line = nl
                 nl = []
 
-            if len(line) > 0:
+            if len(cur_line) > 0:
                 self.win = BLACK
 
     def isWinner(self, player):
@@ -88,5 +113,6 @@ class HexBoard(Board):
             win = True
         return win
 
-
+    def __str__(self):
+        return str(np.rot90(self.matrix, 1))
 
