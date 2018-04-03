@@ -92,7 +92,7 @@ class Node:
 
 
 class UCT:
-    def __init__(self, ia, **kwargs):
+    def __init__(self, ia, *args, **kwargs):
         self.ia = ia
 
         seconds = kwargs.get('time', 1)

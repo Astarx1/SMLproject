@@ -5,13 +5,13 @@ from keras.optimizers import *
 
 class HexNet:
     def __init__(self, board, args):
-        self.board_size = board.board_size
+        self.board_size = 11
         self.args = args
 
         # Neural Net
-        self.input_boards = Input(shape=(self.board_size, self.board_size)) # s: batch_size x board_x x board_y
+        self.input_boards = Input(shape=(self.board_size, self.board_size))  # s: batch_size x board_x x board_y
 
-        x_image = Reshape((self.board_size, self.board_size, 1))(self.input_boards) # batch_size  x board_x x board_y x 1
+        x_image = Reshape((self.board_size, self.board_size, 1))(self.input_boards)  # batch_size x board_x x board_y
 
         # batch_size  x board_x x board_y x num_channels
         h_conv1 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(args.num_channels, 3, padding='same')(x_image)))

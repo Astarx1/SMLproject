@@ -2,13 +2,23 @@ import copy
 import numpy as np
 
 
+INIT_BOARD_SIZE = 11
+
 
 class Board:
     def __init__(self, board_size):
         self.board_size = board_size
         self.matrix = np.zeros((board_size, board_size), dtype=int)
         self.win = 0
-        self.moves_list = [] #added
+        self.moves_list = []
+
+    @staticmethod
+    def get_init_board():
+        return np.zeros((INIT_BOARD_SIZE, INIT_BOARD_SIZE), dtype=int)
+
+    @staticmethod
+    def get_canonical_board(board, player):
+        return player*board
 
     def get_clone(self):
         return copy.deepcopy(self)
