@@ -102,3 +102,6 @@ ENV/
 __pycache__
 *.pyc
 .idea/
+
+# git specific files
+*.patch
