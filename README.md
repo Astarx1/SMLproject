@@ -11,7 +11,7 @@ Python Version : 3.6
 Packages : See requirements.txt
 
 Few things about keeping the code clean :
-- Before coding
+- Before coding, always fetch the master to see if changes have been done.
 - Do not merge your branch directly on the master branch
 - Before pushing ALWAYS launch run.py, it contains test routines which are verifying that you will not be preventing
 others to code
