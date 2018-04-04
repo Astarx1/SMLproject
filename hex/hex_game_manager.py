@@ -12,6 +12,8 @@ positions_letter = {
     'i': 8,
     'j': 9,
     'k': 10,
+    'l': 11,
+    'm': 12,
 }
 
 class HexGameManager:
@@ -46,5 +48,7 @@ class HexGameManager:
         if line is None:
             line = random.randrange(len(HexGameManager.game_database))
 
+        print(len(HexGameManager.game_database))
+        print(len(HexGameManager.game_database[line]))
         return HexGameManager.game_database[line]
 

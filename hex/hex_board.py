@@ -7,7 +7,7 @@ import numpy as np
 
 WHITE = -1
 BLACK = 1 # begins
-BOARD_SIZE = 11
+BOARD_SIZE = 13
 
 
 class IllegalMove(Exception):

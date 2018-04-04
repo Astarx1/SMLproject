@@ -39,7 +39,9 @@ class hex_board_test_routine:
         b.play_move((BLACK,0,8))
         b.play_move((BLACK,0,9))
         b.play_move((BLACK,0,10))
-        b.find_if_winner((BLACK, 0, 10))
+        b.play_move((BLACK,0,11))
+        b.play_move((BLACK,0,12))
+        b.find_if_winner((BLACK, 0, 12))
         assert(b.winner() == BLACK)
         
         b = HexBoard()
@@ -57,7 +59,9 @@ class hex_board_test_routine:
         b.play_move((BLACK,0,8))
         b.play_move((BLACK,0,9))
         b.play_move((BLACK,0,10))
-        b.find_if_winner((BLACK, 0, 10))
+        b.play_move((BLACK,0,11))
+        b.play_move((BLACK,0,12))
+        b.find_if_winner((BLACK, 0, 12))
         assert(b.winner() == BLACK)
 
         b = HexBoard()
@@ -71,8 +75,10 @@ class hex_board_test_routine:
         b.play_move((BLACK,7,7))
         b.play_move((BLACK,6,8))
         b.play_move((BLACK,10,9))
-        b.play_move((BLACK,10,10))
-        b.find_if_winner((BLACK, 0, 10))
+        b.play_move((BLACK,11,10))
+        b.play_move((BLACK,12,11))
+        b.play_move((BLACK,12,12))
+        b.find_if_winner((BLACK, 0, 12))
         assert(b.winner() is not BLACK)
 
     @staticmethod
@@ -90,8 +96,9 @@ class hex_board_test_routine:
         b.play_move((WHITE, 8, 0))
         b.play_move((WHITE, 9, 0))
         b.play_move((WHITE, 10, 0))
-        b.find_if_winner((WHITE, 10, 0))
-        print(b)
+        b.play_move((WHITE, 11, 0))
+        b.play_move((WHITE, 12, 0))
+        b.find_if_winner((WHITE, 12, 0))
         assert (b.winner() == WHITE)
 
         b = HexBoard()
@@ -109,7 +116,9 @@ class hex_board_test_routine:
         b.play_move((WHITE, 8, 0))
         b.play_move((WHITE, 9, 0))
         b.play_move((WHITE, 10, 0))
-        b.find_if_winner((WHITE, 10, 0))
+        b.play_move((WHITE, 11, 0))
+        b.play_move((WHITE, 12, 0))
+        b.find_if_winner((WHITE, 12, 0))
 
         assert (b.winner() == WHITE)
 
@@ -128,7 +137,9 @@ class hex_board_test_routine:
         b.play_move((WHITE, 8, 0))
         b.play_move((WHITE, 9, 0))
         b.play_move((WHITE, 10, 0))
-        b.find_if_winner((WHITE, 10, 0))
+        b.play_move((WHITE, 11, 0))
+        b.play_move((WHITE, 12, 0))
+        b.find_if_winner((WHITE, 12, 0))
 
         assert (b.winner() is not WHITE)
 
@@ -150,7 +161,9 @@ class hex_board_test_routine:
         b.play_move((WHITE, 8, 0))
         b.play_move((WHITE, 9, 0))
         b.play_move((WHITE, 10, 0))
-        b.find_if_winner((WHITE, 10, 0))
+        b.play_move((WHITE, 11, 0))
+        b.play_move((WHITE, 12, 0))
+        b.find_if_winner((WHITE, 12, 0))
 
         assert (b.winner() is WHITE)
 

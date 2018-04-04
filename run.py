@@ -1,14 +1,10 @@
 from test.hex_board import hex_board_test_routine
 from test.hex_ia import hex_IA_test_routine
 from test.hex_game_manager import hex_game_manager_test_routine
-import traceback
 
-hex_board_test_routine.run()
 
 try:
-    print("White win test running ...")
-    hex_board_test_routine.test_win_white()
-    print("White win test OK !")
+    hex_board_test_routine.run()
 except Exception as e:
     print(e)
 

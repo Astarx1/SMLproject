@@ -5,7 +5,7 @@ from keras.optimizers import *
 
 class HexNet:
     def __init__(self, board, args):
-        self.board_size = 11
+        self.board_size = 13
         self.args = args
 
         # Neural Net
