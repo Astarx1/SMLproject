@@ -2,10 +2,12 @@ from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
 
+from .hex_board import BOARD_SIZE
+
 
 class HexNet:
-    def __init__(self, board, args):
-        self.board_size = 13
+    def __init__(self, args):
+        self.board_size = BOARD_SIZE
         self.args = args
 
         # Neural Net

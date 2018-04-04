@@ -7,6 +7,7 @@ import numpy as np
 import sys
 sys.path.append('..')
 from .hex_NNet import HexNet as hnet
+from .hex_board import BOARD_SIZE
 
 
 class dotdict(dict):
@@ -23,21 +24,22 @@ args = dotdict({
     'num_channels': 512,
 })
 
+
 class HexIA(IA):
-    def __init__(self, game):
-        self.nnet = hnet(game, args)
-        self.board_x, self.board_y = game.getBoardSize()
-        self.action_size = game.getActionSize()
+    def __init__(self, load_checkpoint=False):
+        self.nnet = hnet(args)
+        if load_checkpoint:
+            self.load_checkpoint()
 
     def train(self, examples):
         """
         examples: list of examples, each example is of form (board, pi, v)
         """
-        input_boards, target_pis, target_vs = list(zip(*examples))
-        input_boards = np.asarray(input_boards)
-        target_pis = np.asarray(target_pis)
-        target_vs = np.asarray(target_vs)
-        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], batch_size = args.batch_size, epochs=args.epochs)
+        inputs = list(zip(*examples))
+        input_boards = np.asarray(inputs[0])
+        target_pis = np.asarray(inputs[1])
+        target_vs = np.asarray(inputs[2])
+        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], batch_size=args.batch_size, epochs=args.epochs)
 
     def get_proba(self, board):
         """

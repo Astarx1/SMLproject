@@ -6,20 +6,30 @@ class hex_board_test_routine:
     @staticmethod
     def run():
         try:
+            print("Black win test running ...")
             hex_board_test_routine.test_win_black()
             print("Black win test OK !")
         except Exception as e:
             traceback.print_exc()
             print(e)
         try:
+            print("White win test running ...")
             hex_board_test_routine.test_win_white()
             print("White win test OK !")
         except Exception as e:
             traceback.print_exc()
             print(e)
         try:
+            print("Mixed win test running ...")
             hex_board_test_routine.test_win_mixed()
             print("Mixed win test OK !")
+        except Exception as e:
+            traceback.print_exc()
+            print(e)
+        try:
+            print("test_board_array test running ...")
+            hex_board_test_routine.test_board_array()
+            print("test_board_array test OK !")
         except Exception as e:
             traceback.print_exc()
             print(e)
@@ -167,3 +177,19 @@ class hex_board_test_routine:
 
         assert (b.winner() is WHITE)
 
+    @staticmethod
+    def test_board_array():
+        b = HexBoard()
+
+        b.play_move((WHITE, 1, 0))
+        b.play_move((WHITE, 2, 0))
+        b.play_move((WHITE, 3, 0))
+        b.play_move((WHITE, 4, 0))
+        b.play_move((WHITE, 4, 1))
+
+        mat = b.get_copy_matrix()
+        copy_mat = mat.copy()
+        array_board = HexBoard.board_to_array(copy_mat)
+        rematriced_array = HexBoard.array_to_board(array_board)
+        assert (rematriced_array.all() == mat.all())
+        assert (mat.shape == rematriced_array.shape)

@@ -2,7 +2,7 @@ import copy
 import numpy as np
 
 
-INIT_BOARD_SIZE = 11
+INIT_BOARD_SIZE = 13
 
 
 class Board:
@@ -38,6 +38,9 @@ class Board:
     def get_repr_matrix(self):
         return self.matrix
 
+    def get_copy_matrix(self):
+        return self.matrix.copy()
+
     def get_legal_moves_play_list(self, move_list):
         matrix_save = np.copy(self.matrix)
 
@@ -60,3 +63,11 @@ class Board:
         self.matrix = matrix_save
         return r
 
+    @staticmethod
+    def board_to_array(matrix):
+        return matrix.flatten()
+
+    @staticmethod
+    def array_to_board(array):
+        array = array.reshape((INIT_BOARD_SIZE, INIT_BOARD_SIZE))
+        return array
