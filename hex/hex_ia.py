@@ -18,7 +18,7 @@ class dotdict(dict):
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
-    'epochs': 10,
+    'epochs': 1,
     'batch_size': 64,
     'cuda': False,
     'num_channels': 512,
@@ -26,8 +26,9 @@ args = dotdict({
 
 
 class HexIA(IA):
-    def __init__(self, load_checkpoint=False):
-        self.nnet = hnet(args)
+    def __init__(self, specific_args=None, load_checkpoint=False):
+        if specific_args is None:
+            self.nnet = hnet(args)
         if load_checkpoint:
             self.load_checkpoint()
 
@@ -40,6 +41,7 @@ class HexIA(IA):
         target_pis = np.asarray(inputs[1])
         target_vs = np.asarray(inputs[2])
         self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], batch_size=args.batch_size, epochs=args.epochs)
+        self.save_checkpoint()
 
     def get_proba(self, board):
         """

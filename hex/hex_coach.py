@@ -16,11 +16,11 @@ class Coach:
     in Game and NeuralNet. args are specified in main.py.
     """
 
-    def __init__(self, nnet, args):
+    def __init__(self, nnet, args_nnet):
         self.game = Game
         self.nnet = nnet
         self.pnet = self.nnet.__class__(self.game)  # the competitor network
-        self.args = args
+        self.args = args_nnet
         self.mcts = MCTS(self.nnet, self.args)
         self.trainExamplesHistory = []  # history of examples from args.numItersForTrainExamplesHistory latest iterations
         self.skipFirstSelfPlay = False  # can be overriden in loadTrainExamples()
