@@ -109,3 +109,4 @@ __pycache__
 # data specific
 *.npz
 *.npy
+checkpoint/
