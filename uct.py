@@ -2,11 +2,10 @@ import time
 import datetime
 from math import sqrt, log
 
-
 class Node:
     UCTK = 0.0001
 
-    def __init__(self, board, ia, move, father, color):
+    def __init__(self, board, ia, move, father, color, interestingness):
         self.board = board
         self.ia = ia
 
@@ -20,19 +19,21 @@ class Node:
         else:
             self.move = (-color, 0, 0)
 
+        self.val_exploit = interestingness
+        self.p = None
         self.proba = None
         self.expansions = 1
 
         self.update_proba()
 
-    def add_child(self, move, father):
-        nc = Node(self.board, self.ia, move, father, self.color)
+    def add_child(self, move, father, value):
+        nc = Node(self.board, self.ia, move, father, self.color, value)
         self.children.append(nc)
 
     def select_child_expand(self):
         if len(self.children) > 0:
             s = sorted(self.children, key=lambda c:
-                       c.proba + Node.UCTK*sqrt(2*log(self.expansions)/c.expansions))[-1]
+                       c.proba + c.val_exploit*Node.UCTK*sqrt(2*log(self.expansions)/c.expansions))[-1]
             if s is not None:
                 if s.move is not None:
                     pass
@@ -43,13 +44,13 @@ class Node:
             return s
         else:
             return None
-
+    
     def expand_node(self):
         if len(self.children) == 0:
             moves = self.get_moves_list()
             nb = self.board.get_legal_moves_play_list(moves)
             for m in nb:
-                self.add_child((-self.move[0], m[0], m[1]), self)
+                self.add_child((-self.move[0], m[0], m[1]), self, self.p[self.board.board_size*m[0]+m[1]])
             self.update_proba()
             self.update_expansion(len(nb))
 
@@ -65,7 +66,7 @@ class Node:
 
     def compute_ia_proba(self):
         moves = self.get_moves_list()
-        self.proba = self.ia.get_proba(self.board.get_matrix_play_list(moves))
+        self.proba, self.p = self.ia.get_proba(self.board.get_matrix_play_list(moves))
 
     def update_proba(self):
         if len(self.children) == 0:
@@ -100,7 +101,7 @@ class UCT:
         self.calculation_time = datetime.timedelta(seconds=seconds)
 
     def next_turn(self, board, color):
-        root = Node(board, self.ia, None, None, color)
+        root = Node(board, self.ia, None, None, color, 0)
 
         begin = datetime.datetime.utcnow()
         while datetime.datetime.utcnow() - begin < self.calculation_time:

@@ -48,7 +48,7 @@ class HexIA(IA):
         board: np array with board
         """
         # timing
-        start = time.time()
+        # start = time.time()
 
         # preparing input
         board = board[np.newaxis, :, :]
@@ -56,7 +56,8 @@ class HexIA(IA):
         # run
         pi, v = self.nnet.model.predict(board)
 
-        #print('PREDICTION TIME TAKEN : {0:03f}'.format(time.time()-start))
+        # print('PREDICTION TIME TAKEN : {0:03f}'.format(time.time()-start))
+        # print(pi[0].shape)
         return pi[0], v[0]
 
     def save_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
@@ -83,5 +84,6 @@ class HexIARandom(IA):
 
     def get_proba(self, matrix):
         t = 0.5 + 0.1*(random.random()-0.5)
-        return t
+        p = np.ones((BOARD_SIZE*BOARD_SIZE))
+        return t, p
 
