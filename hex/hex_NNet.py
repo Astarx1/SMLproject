@@ -1,6 +1,7 @@
 from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
+from keras.utils import *
 
 from .hex_board import BOARD_SIZE
 
@@ -36,3 +37,6 @@ class HexNet:
 
         self.model = Model(inputs=self.input_boards, outputs=[self.pi, self.v])
         self.model.compile(loss=['categorical_crossentropy', 'mean_squared_error'], optimizer=Adam(args.lr))
+
+    def summary(self):
+        print_summary(self.model, line_length=None, positions=None, print_fn=None)

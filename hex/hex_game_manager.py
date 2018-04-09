@@ -55,7 +55,12 @@ class HexGameManager:
         pass
 
     @staticmethod
-    def write_format_advanced(moves, args, file):
+    def write_add_format_advanced(moves, args, file):
+        """
+        Advanced format should contain informations like the board used, the model of the NN, the setup and time for
+        the UTC...
+        Current format : [player1],[player2],[winner]:[",".join([moves])]
+        """
         with open(file, "a") as mf:
             a = args["player1"] + "," + args["player2"] + "," + str(moves[0][0]*args["winner"]) + ":"
             ms = []

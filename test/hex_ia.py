@@ -62,4 +62,3 @@ class hex_IA_test_routine:
         mat = b.get_copy_matrix()
 
         r = nn.get_proba(mat)
-        print(str(r))

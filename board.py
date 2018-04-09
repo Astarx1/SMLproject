@@ -1,8 +1,9 @@
 import copy
 import numpy as np
+from parameters import Params
 
 
-INIT_BOARD_SIZE = 13
+INIT_BOARD_SIZE = Params.BOARD_SIZE
 
 
 class Board:

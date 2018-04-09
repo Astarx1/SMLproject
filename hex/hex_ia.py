@@ -26,6 +26,8 @@ args = dotdict({
 
 
 class HexIA(IA):
+    compute_proba_time = 0
+
     def __init__(self, specific_args=None, load_checkpoint=False):
         if specific_args is None:
             self.nnet = hnet(args)
@@ -48,13 +50,16 @@ class HexIA(IA):
         board: np array with board
         """
         # timing
-        # start = time.time()
+        start = time.time()
 
         # preparing input
         board = board[np.newaxis, :, :]
 
         # run
         pi, v = self.nnet.model.predict(board)
+        end = time.time()
+
+        HexIA.compute_proba_time = 0.99*HexIA.compute_proba_time + 0.01*(end - start)
 
         # print('PREDICTION TIME TAKEN : {0:03f}'.format(time.time()-start))
         # print(pi[0].shape)
@@ -85,5 +90,5 @@ class HexIARandom(IA):
     def get_proba(self, matrix):
         t = 0.5 + 0.1*(random.random()-0.5)
         p = np.ones((BOARD_SIZE*BOARD_SIZE))
-        return t, p
+        return p, t
 
