@@ -39,8 +39,10 @@ class HexBoard(Board):
                 self.matrix[move[1]][move[2]] = move[0]
                 self.moves_list.append(move)
             else:
+                print("Illegal move : " + str(move))
                 raise IllegalMove
         else:
+            print("Illegal move : " + str(move))
             raise IllegalMove
 
     def find_if_winner(self, move):
