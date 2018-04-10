@@ -1,6 +1,7 @@
 import random
 from .hex_board import HexBoard, BOARD_SIZE, BLACK
 import traceback
+from parameters import Params
 
 """
 In HexGameManager, we should separate the training and testing data !
@@ -39,9 +40,9 @@ positions_letter = {
 
 class UnknownFormat(Exception):
     pass
-
-
 class BadFormat(Exception):
+    pass
+class EmptyDB(Exception):
     pass
 
 
@@ -55,14 +56,16 @@ class HexGameManager:
         pass
 
     @staticmethod
-    def write_add_format_advanced(moves, args, file):
+    def write_add_format_advanced(moves, args, file=Params.STANDARD_GAME_FILE):
         """
         Advanced format should contain informations like the board used, the model of the NN, the setup and time for
         the UTC...
         Current format : [player1],[player2],[winner]:[",".join([moves])]
         """
+        Params.prt("hex_game_manager.py", "Moves : " + str(moves))
+        Params.prt("hex_game_manager.py", "Args : " + str(args))
         with open(file, "a") as mf:
-            a = args["player1"] + "," + args["player2"] + "," + str(moves[0][0]*args["winner"]) + ":"
+            a = args["player1"] + "," + args["player2"] + "," + str(args["winner"]) + ":"
             ms = []
             for m in moves:
                 ms.append(positions_letter[m[1]] + positions_letter[m[2]])
@@ -70,7 +73,7 @@ class HexGameManager:
             mf.write(a)
 
     @staticmethod
-    def read_format_advanced(file):
+    def read_format_advanced(file=Params.STANDARD_GAME_FILE):
         with open(file, 'r') as f:
             content = f.readlines()
         content = [x.rstrip('\n') for x in content]
@@ -98,7 +101,7 @@ class HexGameManager:
         return db
 
     @staticmethod
-    def read_format_raw_pos(file):
+    def read_format_raw_pos(file=Params.STANDARD_GAME_FILE):
         with open(file, 'r') as f:
             content = f.readlines()
         content = [x.rstrip('\n') for x in content]
@@ -121,11 +124,11 @@ class HexGameManager:
                     raise BadFormat
 
                 player = -player
-            db.append({"moves": tmp})
+            db.append({"moves": tmp, "infos": {"winner": 1}})
         return db
 
     @staticmethod
-    def update_file(file, format="raw_pos"):
+    def update_file(file=Params.STANDARD_GAME_FILE, format=Params.STANDARD_FORMAT):
         HexGameManager.game_database[file] = []
 
         d = []
@@ -140,7 +143,7 @@ class HexGameManager:
             HexGameManager.game_database[file].append(g)
 
     @staticmethod
-    def get_game(line=None, file="hex/data/raw_games.dat", format="raw_pos"):
+    def get_game(line=None, file=Params.STANDARD_GAME_FILE, format=Params.STANDARD_FORMAT):
         if file not in HexGameManager.game_database:
             HexGameManager.game_database[file] = []
 
@@ -161,9 +164,15 @@ class HexGameManager:
         return HexGameManager.game_database[file][line]["moves"]
 
     @staticmethod
-    def get_random_move():
+    def get_random_move(file=Params.STANDARD_GAME_FILE, format=Params.STANDARD_FORMAT):
         good = False
-        file = random.choice(list(HexGameManager.game_database.keys()))
+        if file is None:
+            if len(list(HexGameManager.game_database.keys())) > 0:
+                file = random.choice(list(HexGameManager.game_database.keys()))
+            else:
+                raise EmptyDB
+        HexGameManager.update_file(file, format)
+
         line = 0
         move = 0
         while not good:
@@ -189,6 +198,16 @@ class HexGameManager:
         # But we want the probabilities for the next player
         mat = HexGameManager.game_database[file][line]["moves"][move + 1][0] * mat
 
-        return mat, HexBoard.board_to_array(mat2), 1
+        v = 0
+        if (HexGameManager.game_database[file][line]["infos"]["winner"] is
+            HexGameManager.game_database[file][line]["moves"][move + 1][0]):
+            v = 1
+
+        infos = {
+            "winner": HexGameManager.game_database[file][line]["infos"]["winner"],
+            "nb_moves": len(HexGameManager.game_database[file][line]["moves"])
+        }
+
+        return mat, HexBoard.board_to_array(mat2), v, infos
 
 

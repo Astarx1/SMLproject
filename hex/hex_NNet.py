@@ -27,9 +27,9 @@ class HexNet:
 
         h_conv4_flat = Flatten()(h_conv4)
         # batch_size x 1024
-        s_fc1 = Dropout(args.dropout)(Activation('relu')(BatchNormalization(axis=1)(Dense(1024)(h_conv4_flat))))
+        s_fc1 = Dropout(args.dropout)(Activation('relu')(BatchNormalization(axis=1)(Dense(256)(h_conv4_flat))))
         # batch_size x 1024
-        s_fc2 = Dropout(args.dropout)(Activation('relu')(BatchNormalization(axis=1)(Dense(512)(s_fc1))))
+        s_fc2 = Dropout(args.dropout)(Activation('relu')(BatchNormalization(axis=1)(Dense(128)(s_fc1))))
         # batch_size x self.action_size
         self.pi = Dense(self.board_size*self.board_size, activation='softmax', name='pi')(s_fc2)
         # batch_size x 1

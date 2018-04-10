@@ -20,6 +20,4 @@ class hex_coach_test_routine:
         if os.path.isfile("hex/data/5by5self.dat"):
             os.remove("hex/data/5by5self.dat")
         c = HexCoach()
-        c.add_batch_file()
-        c.ai.nnet.summary()
-        print(HexGameManager.read_format_advanced("hex/data/5by5self.dat"))
+        c.trainAI()

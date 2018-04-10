@@ -1,3 +1,4 @@
+from parameters import Params
 from ia import IA
 
 import os
@@ -18,10 +19,10 @@ class dotdict(dict):
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
-    'epochs': 1,
-    'batch_size': 64,
-    'cuda': False,
-    'num_channels': 512,
+    'epochs': Params.EPOCS,
+    'batch_size': Params.BATCH_SIZE,
+    'cuda': Params.CUDA,
+    'num_channels': Params.NUMBER_FILTERS,
 })
 
 
@@ -43,29 +44,16 @@ class HexIA(IA):
         target_pis = np.asarray(inputs[1])
         target_vs = np.asarray(inputs[2])
         self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], batch_size=args.batch_size, epochs=args.epochs)
-        self.save_checkpoint()
 
     def get_proba(self, board):
         """
         board: np array with board
         """
-        # timing
-        start = time.time()
-
-        # preparing input
         board = board[np.newaxis, :, :]
-
-        # run
         pi, v = self.nnet.model.predict(board)
-        end = time.time()
-
-        HexIA.compute_proba_time = 0.99*HexIA.compute_proba_time + 0.01*(end - start)
-
-        # print('PREDICTION TIME TAKEN : {0:03f}'.format(time.time()-start))
-        # print(pi[0].shape)
         return pi[0], v[0]
 
-    def save_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
+    def save_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.NN_CHECKPOINT_FILENAME):
         filepath = os.path.join(folder, filename)
         if not os.path.exists(folder):
             print("Checkpoint Directory does not exist! Making directory {}".format(folder))
@@ -74,7 +62,7 @@ class HexIA(IA):
             print("Checkpoint Directory exists! ")
         self.nnet.model.save_weights(filepath)
 
-    def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
+    def load_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.NN_CHECKPOINT_FILENAME):
         # https://github.com/pytorch/examples/blob/master/imagenet/main.py#L98
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):

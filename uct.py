@@ -49,7 +49,7 @@ class Node:
             s = sorted(self.children, key=lambda c:
                                       c.proba + c.val_exploit*Node.UCTK*sqrt(2*log(self.expansions)/c.expansions))[-1]
 
-            return s.move
+            return s.move, self.expansions
 
     def expand_node(self):
         if len(self.children) == 0:
