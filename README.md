@@ -30,3 +30,14 @@ The environment should be activated every time the code is run (Pycharm does it 
 
 Something may have been forgotten in requirements.txt and it may change following project progress, so feel free to
 repeat the process if you have a problem and mail Romain if it doesn't solve the problem.
+
+TODO :
+In UTC,
+1) Prune parts of the trees where it is impossible to find new children so that the algorithm will not explore these
+parts anymore
+2) An option which would, for certain games advantage areas which are not recommanded by the p theta :) , but such
+games should not be included in the p-learning process, only for v theta (hard to do ...)
+3) Include in the AI a "It is won" option so that v theta would be 1 if the game is won
+
+BUGS :
+1) In the coach, the UTC often returns -1 as first move. I do not know why...

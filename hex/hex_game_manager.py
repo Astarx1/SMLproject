@@ -181,22 +181,21 @@ class HexGameManager:
             if move > 0:
                 good = True
         b = HexBoard()
-        i = 0
 
-        for m in HexGameManager.game_database[file][line]["moves"]:
-            b.play_move(m)
+        i = 0
+        while i <= move:
+            b.play_move(HexGameManager.game_database[file][line]["moves"][i])
             i += 1
-            if i >= move:
-                break
+
         mat = b.get_copy_matrix()
 
         b = HexBoard()
         b.play_move(HexGameManager.game_database[file][line]["moves"][move + 1])
-        mat2 = b.get_copy_matrix()
 
         # Used to get the canonical board. I am not sure though
         # But we want the probabilities for the next player
-        mat = HexGameManager.game_database[file][line]["moves"][move + 1][0] * mat
+        mat2 = HexGameManager.game_database[file][line]["moves"][move+1][0] * b.get_copy_matrix()
+        mat = HexGameManager.game_database[file][line]["moves"][move][0] * mat
 
         v = 0
         if (HexGameManager.game_database[file][line]["infos"]["winner"] is
@@ -208,6 +207,21 @@ class HexGameManager:
             "nb_moves": len(HexGameManager.game_database[file][line]["moves"])
         }
 
+        Params.prt("hex_game_manager.py", "-------------")
+        Params.prt("hex_game_manager.py", str(HexGameManager.game_database[file][line]["infos"]["winner"]))
+        Params.prt("hex_game_manager.py", "Moves")
+        Params.prt("hex_game_manager.py", str(HexGameManager.game_database[file][line]["moves"][move]))
+        Params.prt("hex_game_manager.py", str(HexGameManager.game_database[file][line]["moves"][move + 1]))
+        Params.prt("hex_game_manager.py", "Original :")
+        Params.prt("hex_game_manager.py", str(HexGameManager.game_database[file][line]["moves"][move][0] * mat))
+        Params.prt("hex_game_manager.py", HexGameManager.game_database[file][line]["moves"][move+1][0] * b.get_copy_matrix())
+        Params.prt("hex_game_manager.py", "Altered")
+        Params.prt("hex_game_manager.py", mat)
+        Params.prt("hex_game_manager.py", mat2)
+        Params.prt("hex_game_manager.py", "Infos transmitted")
+        Params.prt("hex_game_manager.py", v)
+        Params.prt("hex_game_manager.py", infos)
+        Params.prt("hex_game_manager.py", "-------------")
         return mat, HexBoard.board_to_array(mat2), v, infos
 
 

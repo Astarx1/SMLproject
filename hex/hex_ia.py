@@ -8,7 +8,7 @@ import numpy as np
 import sys
 sys.path.append('..')
 from .hex_NNet import HexNet as hnet
-from .hex_board import BOARD_SIZE
+from .hex_board import BOARD_SIZE, BLACK, WHITE
 
 
 class dotdict(dict):
@@ -55,19 +55,19 @@ class HexIA(IA):
 
     def save_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.NN_CHECKPOINT_FILENAME):
         filepath = os.path.join(folder, filename)
+
         if not os.path.exists(folder):
-            print("Checkpoint Directory does not exist! Making directory {}".format(folder))
+            Params.log("hex_ai.py", "Checkpoint Directory does not exist! Making directory {}".format(folder))
             os.mkdir(folder)
-        else:
-            print("Checkpoint Directory exists! ")
+
         self.nnet.model.save_weights(filepath)
 
     def load_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.NN_CHECKPOINT_FILENAME):
-        # https://github.com/pytorch/examples/blob/master/imagenet/main.py#L98
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):
-            raise("No model in path {}".format(filepath))
-        self.nnet.model.load_weights(filepath)
+            Params.log("hex_ai.py", "No model in path {}".format(filepath))
+        else:
+            self.nnet.model.load_weights(filepath)
 
 
 class HexIARandom(IA):
@@ -79,4 +79,45 @@ class HexIARandom(IA):
         t = 0.5 + 0.1*(random.random()-0.5)
         p = np.ones((BOARD_SIZE*BOARD_SIZE))
         return p, t
+
+
+class HexAIFake(IA):
+    def __init__(self):
+        IA.__init__(self)
+
+    def _check_with_excluded(self, matrix, excluded):
+        for x in range(BOARD_SIZE):
+            for y in range(BOARD_SIZE):
+                if (x, y) in excluded:
+                    continue
+                else:
+                    if matrix[x][y] is not Params.NOT_PLAYED:
+                        return False
+        return True
+
+    def get_proba(self, matrix):
+        v = 0.5
+        p = np.ones((BOARD_SIZE*BOARD_SIZE))
+
+        if int(matrix[0][2]) != Params.NOT_PLAYED:
+            if int(matrix[0][2]) == BLACK:
+                v = 0.8
+            else:
+                v = 0.2
+        elif int(matrix[0][0]) != Params.NOT_PLAYED:
+            if int(matrix[0][0]) == BLACK:
+                v = 0.3
+                if int(matrix[0][1]) == WHITE:
+                    v = 0.4
+            else:
+                v = 0.7
+                if int(matrix[0][1]) == BLACK:
+                    v = 0.6
+
+        p[0] = 5
+        p[1] = 5
+        p[2] = 5
+
+        return p, v
+
 
