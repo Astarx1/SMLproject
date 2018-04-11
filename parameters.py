@@ -40,7 +40,7 @@ class Params:
     # Checkpoint storage
     NN_CHECKPOINT_FOLDER = "checkpoint"
 
-    STORE_AFTER = 75
+    STORE_AFTER = 75  # Put at -1 in order to never create specific checkpoints
     PREFIX_NAME = "check"
     UTC_VERSION = "v1"
     NEURAL_VERSION = "v1"

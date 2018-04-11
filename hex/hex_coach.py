@@ -147,11 +147,15 @@ class HexCoach:
 
         self.ai.train(moves)
         self.training_calls += 1
-        if self.training_calls % Params.STORE_AFTER > 0:
-           self.ai.save_checkpoint(filename=Params.WORKING_CHECKPOINT_FILENAME)
+        if Params.STORE_AFTER > 0:
+            if self.training_calls % Params.STORE_AFTER > 0:
+               self.ai.save_checkpoint(filename=Params.WORKING_CHECKPOINT_FILENAME)
+            else:
+                name = self.give_checkpoint_name()
+                self.ai.save_checkpoint(filename=name)
         else:
-            name = self.give_checkpoint_name()
-            self.ai.save_checkpoint(filename=name)
+            self.ai.save_checkpoint(filename=Params.WORKING_CHECKPOINT_FILENAME)
+
 
     def give_checkpoint_name(self):
         name = Params.PREFIX_NAME
