@@ -5,6 +5,7 @@ from .hex_game_manager import HexGameManager
 from uct import UCT
 from parameters import Params
 
+import time
 import traceback
 
 
@@ -21,35 +22,48 @@ class HexCoach:
     def add_batch_file(self):
         player = Params.FIRST_PLAYER
 
-        for i in range(Params.NUMBER_GAMES_BATCH):
-            b = HexBoard()
-            moves = []
-            w = 0
-            j = 0
-            expansions = []
-            rollouts = []
+        i = 0
+        while i < Params.NUMBER_GAMES_BATCH:
+            try:
+                b = HexBoard()
+                moves = []
+                w = 0
+                j = 0
+                expansions = []
+                rollouts = []
+                ended = []
 
-            while w == 0:
-                m, r, ro = self.uct.next_turn(b, player)
-                expansions.append(r)
-                rollouts.append(ro)
-                player = Params.get_next_player(player)
-                moves.append(m)
-                b.play_move(m)
-                b.find_if_winner(m)
-                w = b.winner()
-                j += 1
-                Params.ongoing()
+                start = time.time()
+                while w == 0:
+                    m, infos = self.uct.next_turn(b, player)
+                    expansions.append(infos["expansions"])
+                    rollouts.append(infos["rollouts"])
+                    ended.append(infos["ended"])
+                    player = Params.get_next_player(player)
+                    moves.append(m)
+                    b.play_move(m)
+                    b.find_if_winner(m)
+                    w = b.winner()
+                    j += 1
+                    Params.ongoing()
+                end = time.time()
 
-            Params.end_ongoing()
-            Params.log("hex_coach.py", "Match : " + str(i + 1) + "/" + str(Params.NUMBER_GAMES_BATCH))
-            Params.log("hex_coach.py", "Winner : " + str(w))
-            Params.log("hex_coach.py", "Moves (" + str(len(moves)) + ") : " + str(moves))
-            Params.log("hex_coach.py", "Expansions : " + str(expansions))
-            Params.log("hex_coach.py", "Rollouts : " + str(rollouts))
-            Params.log("hex_coach.py", "Matrix : \n" + str(b.get_copy_matrix()))
-            args = {"player1": "cnn", "player2": "cnn", "winner": str(w)}
-            HexGameManager.write_add_format_advanced(moves, args, "hex/data/5by5self.dat")
+                Params.end_ongoing()
+                Params.log("hex_coach.py", "Match : " + str(i + 1) + "/" + str(Params.NUMBER_GAMES_BATCH) +
+                           " - " + str(end - start) + " sec")
+                Params.log("hex_coach.py", "Winner : " + str(w))
+                Params.log("hex_coach.py", "Moves (" + str(len(moves)) + ") : " + str(moves))
+                Params.log("hex_coach.py", "Expansions : " + str(expansions))
+                Params.log("hex_coach.py", "Rollouts : " + str(rollouts))
+                Params.log("hex_coach.py", "Ended : " + str(ended))
+                Params.log("hex_coach.py", "Matrix : \n" + str(b.get_copy_matrix()))
+                args = {"player1": "cnn", "player2": "cnn", "winner": str(w)}
+                HexGameManager.write_add_format_advanced(moves, args, "hex/data/5by5self.dat")
+                i += 1
+            except Exception:
+                traceback.print_exc()
+                time.sleep(1)
+                Params.log("hex_coach.py", "Failure when creating game")
 
     def trainAI(self, checkpoint=Params.TAKE_FROM_CHECKPOINT):
         j = 0
@@ -62,14 +76,12 @@ class HexCoach:
 
         while True:
             try:
-                if j % Params.RESET_GAMES_AFTER_BATCH is 0:
-                    self.ai.save_checkpoint()
-                    Params.prt("hex_coach.py", "Checkpoint saved")
-
-                    import os
-                    if os.path.isfile("hex/data/5by5self.dat"):
-                        os.remove("hex/data/5by5self.dat")
-                    Params.prt("hex_coach.py", "Games removed")
+                if Params.GAME_SET_METHOD is "reset":
+                    if j % Params.RESET_GAMES_AFTER_BATCH is 0:
+                        import os
+                        if os.path.isfile("hex/data/5by5self.dat"):
+                            os.remove("hex/data/5by5self.dat")
+                        Params.prt("hex_coach.py", "Games removed")
 
             except Exception:
                 traceback.print_exc()

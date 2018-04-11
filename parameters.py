@@ -30,15 +30,17 @@ class Params:
     TAKE_FROM_CHECKPOINT = False
     NN_CHECKPOINT_FOLDER = "checkpoint"
     NN_CHECKPOINT_FILENAME = "checkpoint.pth.tar"
-    RESET_GAMES_AFTER_BATCH = 1
-    NUMBER_GAMES_BATCH = 1
+    GAME_SET_METHOD = "maximum"
+    RESET_GAMES_AFTER_BATCH = 1  # If GAME_SET_METHOD = "reset"
+    MAXIMUM_GAMES_BATCH = 50  # Id GAME_SET_METHOD = "maximum"
+    NUMBER_GAMES_BATCH = 10  # When the training is run
 
     @staticmethod
     def get_next_player(player):
         return -player
 
     forbidden_files = [
-        #"hex_game_manager.py"
+        "hex_game_manager.py"
     ]
     @staticmethod
     def prt(file, s):

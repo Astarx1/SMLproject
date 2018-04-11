@@ -39,5 +39,7 @@ parts anymore
 games should not be included in the p-learning process, only for v theta (hard to do ...)
 3) Include in the AI a "It is won" option so that v theta would be 1 if the game is won
 
+1) In Coach : To be able to play against previous versions
+
 BUGS :
 1) In the coach, the UTC often returns -1 as first move. I do not know why...

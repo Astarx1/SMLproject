@@ -1,8 +1,10 @@
 import time
 import datetime
 from math import sqrt, log
-from parameters import Params
 import random
+import copy
+
+from parameters import Params
 
 
 class Node:
@@ -25,6 +27,8 @@ class Node:
         self.proba = None
         self.expansions = 1
 
+        self.ended = False
+
         self.update_proba()
 
     def add_child(self, move, father, value):
@@ -34,30 +38,45 @@ class Node:
     def select_child_expand(self):
         s = sorted(self.children,
                    key=lambda c: c.proba - c.val_exploit*Node.UCTK*sqrt(2*log(self.expansions)/c.expansions)
-                   )[0]
-        return s
+                   )
+        w = None
+        for i in range(len(s)):
+            if not s[i].ended:
+                w = s[i]
+                break
+        return w
 
     def get_best_child_move(self):
         s = sorted(self.children,
                    key=lambda c: c.proba + Params.RANDOM_FACTOR_CONSTANT*random.gauss(0, Params.GAUSSIAN_SIGMA)
                    )[0]
-        return s.move, self.expansions
+        return s.move, self.expansions, s
 
     def expand_node(self):
         if len(self.children) == 0:
             moves = self.get_moves_list()
             nb = self.board.get_legal_moves_play_list(moves)
 
-            c = self.color
-            if self.move is not None:
-                c = -self.move[0]
+            if nb is not None:
+                if len(nb) > 0:
+                    c = self.color
+                    if self.move is not None:
+                        c = -self.move[0]
 
-            for m in nb:
-                self.add_child((c, m[0], m[1]), self, self.p[self.board.board_size*m[0]+m[1]])
+                    for m in nb:
+                        self.add_child((c, m[0], m[1]), self, self.p[self.board.board_size*m[0]+m[1]])
 
-            self.update_proba()
+                    self.update_proba()
+                else:
+                    self.ended = True
+            else:
+                self.ended = True
         else:
-            self.select_child_expand().expand_node()
+            c = self.select_child_expand()
+            if c is not None:
+                c.expand_node()
+            else:
+                self.ended = True
             self.update_proba()
             self.update_expansion()
 
@@ -104,20 +123,35 @@ class UCT:
         self.ia = ia
         self.root = None
 
+        self.expected_node = None
+        self.expected_board = None
+
         seconds = kwargs.get('time', 1.0)
         self.calculation_time = seconds
 
     def next_turn(self, board, color, args={"method": Params.METHOD_STOP, "value": Params.VALUE_STOP}):
+        '''if self.expected_board is not None and self.expected_node is not None:
+            if board.get_copy_matrix().all() == self.expected_board.all():
+                self.expected_node.father = None
+                self.expected_node.move = None
+                self.root = self.expected_node
+            else:
+                self.root = Node(board, self.ia, None, None, -color, 0)
+        else:'''
+
         self.root = Node(board, self.ia, None, None, -color, 0)
+
         value_init = self.get_init_value(args)
         value = value_init
         rollouts = 0
-        while self.check_continue(value, value_init, args):
+        while self.check_continue(value, value_init, args) and not self.root.ended:
             self.root.expand_node()
             value = self.update_value(value, args)
             rollouts += 1
-        bm, exp = self.root.get_best_child_move()
-        return bm, exp, rollouts
+        bm, exp, self.expected_node = self.root.get_best_child_move()
+
+        infos = {"expansions": exp, "rollouts": rollouts, "ended": self.root.ended}
+        return bm, infos
 
     def get_init_value(self, args):
         if args["method"] == "time":

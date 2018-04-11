@@ -64,6 +64,7 @@ class HexGameManager:
         """
         Params.prt("hex_game_manager.py", "Moves : " + str(moves))
         Params.prt("hex_game_manager.py", "Args : " + str(args))
+
         with open(file, "a") as mf:
             a = args["player1"] + "," + args["player2"] + "," + str(args["winner"]) + ":"
             ms = []
@@ -71,6 +72,18 @@ class HexGameManager:
                 ms.append(positions_letter[m[1]] + positions_letter[m[2]])
             a += ",".join(ms) + '\n'
             mf.write(a)
+
+        if Params.GAME_SET_METHOD == "maximum":
+            lines = []
+            with open(file, "r") as mf:
+                lines = mf.readlines()
+
+            if len(lines) > Params.MAXIMUM_GAMES_BATCH:
+                    lines.pop(0)
+
+            with open(file, "w") as mf:
+                for l in lines:
+                    mf.write(l)
 
     @staticmethod
     def read_format_advanced(file=Params.STANDARD_GAME_FILE):
@@ -171,6 +184,7 @@ class HexGameManager:
                 file = random.choice(list(HexGameManager.game_database.keys()))
             else:
                 raise EmptyDB
+
         HexGameManager.update_file(file, format)
 
         line = 0

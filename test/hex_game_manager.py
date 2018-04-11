@@ -32,5 +32,3 @@ class hex_game_manager_test_routine:
         print(game)
         print(p)
         print(v)
-
-hex_game_manager_test_routine.run()
