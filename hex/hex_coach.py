@@ -23,6 +23,8 @@ class HexCoach:
         self.ai = HexIA()
         self.uct = UCT(self.ai)
 
+        self.training_calls = 0
+
     def add_batch_file(self):
         player = Params.FIRST_PLAYER
 
@@ -78,7 +80,9 @@ class HexCoach:
         j = 0
         if checkpoint:
             try:
-                self.ai.load_checkpoint()
+                n = self.get_last_valid_checkpoint_name()
+                if n is not None:
+                    self.ai.load_checkpoint(filename=n)
                 Params.prt("hex_coach.py", "Checkpoint Loaded !")
             except:
                 Params.log("hex_coach.py", "Unable to open the checkpoint")
@@ -139,7 +143,49 @@ class HexCoach:
             HexCoach.average_winner[-1] += i/len(winner)
 
         self.ai.train(moves)
-        self.ai.save_checkpoint()
+        self.training_calls += 1
+        self.ai.save_checkpoint(filename="working_checkpoint" + Params.SUFFIX)
 
-    # def give_checkpoint_name(self):
+    def give_checkpoint_name(self):
+        name = Params.PREFIX_NAME
+        utc_version = Params.UTC_VERSION
+        neural_version = Params.NEURAL_VERSION
+        board_version = Params.BOARD_VERSION
+        sep = Params.SEPARATOR
+        suffix = Params.SUFFIX
+
+        iteration = self.training_calls
+
+        return name + sep + board_version + sep + utc_version + sep + neural_version + sep + iteration + suffix
+
+    def get_checkpoint_informations(self, name):
+        s = name.split(Params.SEPARATOR)
+        info = {"valid": False, "name": None, "board": None, "utc": None, "neural": None, "iters": None, "full": name}
+
+        if len(s) is 5:
+            info["name"] = s[0]
+            info["board"] = s[1]
+            info["utc"] = s[2]
+            info["neural"] = s[3]
+            info["iters"] = s[4]
+            info["valid"] = True
+
+        return info
+
+    def get_last_valid_checkpoint_name(self, folder=Params.NN_CHECKPOINT_FOLDER):
+        from os import walk
+        f = []
+        for (dirpath, dirnames, filenames) in walk(folder):
+            f.extend(filenames)
+            break
+        p = []
+        for v in f:
+            ci = self.get_checkpoint_informations(v)
+            if ci["valid"] is True:
+                p.append(ci)
+        if len(p) > 0:
+            return sorted(p, key=lambda x: x["iter"], reverse=True)[0]["full"]
+        else:
+            return None
+
 
