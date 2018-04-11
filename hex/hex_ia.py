@@ -53,7 +53,7 @@ class HexIA(IA):
         pi, v = self.nnet.model.predict(board)
         return pi[0], v[0]
 
-    def save_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.NN_CHECKPOINT_FILENAME):
+    def save_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.WORKING_CHECKPOINT_FILENAME):
         filepath = os.path.join(folder, filename)
 
         if not os.path.exists(folder):
@@ -62,7 +62,7 @@ class HexIA(IA):
 
         self.nnet.model.save_weights(filepath)
 
-    def load_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.NN_CHECKPOINT_FILENAME):
+    def load_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.WORKING_CHECKPOINT_FILENAME):
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):
             Params.log("hex_ai.py", "No model in path {}".format(filepath))
