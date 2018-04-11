@@ -4,7 +4,12 @@ from keras.optimizers import *
 from keras.utils import *
 
 from .hex_board import BOARD_SIZE
+from parameters import Params
 
+nbf1 = Params.NUMBER_FILTERS_CN_1
+nbf2 = Params.NUMBER_FILTERS_CN_2
+nbf3 = Params.NUMBER_FILTERS_CN_3
+nbf4 = Params.NUMBER_FILTERS_CN_4
 
 class HexNet:
     def __init__(self, args):
@@ -17,19 +22,19 @@ class HexNet:
         x_image = Reshape((self.board_size, self.board_size, 1))(self.input_boards)  # batch_size x board_x x board_y
 
         # batch_size  x board_x x board_y x num_channels
-        h_conv1 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(args.num_channels, 3, padding='same')(x_image)))
+        h_conv1 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(nbf1, 3, padding='same')(x_image)))
         # batch_size  x board_x x board_y x num_channels
-        h_conv2 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(args.num_channels, 3, padding='same')(h_conv1)))
+        h_conv2 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(nbf2, 3, padding='same')(h_conv1)))
         # batch_size  x (board_x-2) x (board_y-2) x num_channels
-        h_conv3 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(args.num_channels, 3, padding='valid')(h_conv2)))
+        h_conv3 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(nbf3, 3, padding='valid')(h_conv2)))
         # batch_size  x (board_x-4) x (board_y-4) x num_channels
-        h_conv4 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(args.num_channels, 3, padding='valid')(h_conv3)))
+        h_conv4 = Activation('relu')(BatchNormalization(axis=3)(Conv2D(nbf4, 3, padding='valid')(h_conv3)))
 
         h_conv4_flat = Flatten()(h_conv4)
         # batch_size x 1024
-        s_fc1 = Dropout(args.dropout)(Activation('relu')(BatchNormalization(axis=1)(Dense(256)(h_conv4_flat))))
+        s_fc1 = Dropout(args.dropout)(Activation('relu')(BatchNormalization(axis=1)(Dense(400)(h_conv4_flat))))
         # batch_size x 1024
-        s_fc2 = Dropout(args.dropout)(Activation('relu')(BatchNormalization(axis=1)(Dense(128)(s_fc1))))
+        s_fc2 = Dropout(args.dropout)(Activation('relu')(BatchNormalization(axis=1)(Dense(200)(s_fc1))))
         # batch_size x self.action_size
         self.pi = Dense(self.board_size*self.board_size, activation='softmax', name='pi')(s_fc2)
         # batch_size x 1

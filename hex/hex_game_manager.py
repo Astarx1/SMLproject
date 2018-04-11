@@ -48,6 +48,7 @@ class EmptyDB(Exception):
 
 class HexGameManager:
     game_database = {}
+    hashes = {}
 
     def __init__(self, *args):
         pass
@@ -191,7 +192,7 @@ class HexGameManager:
         move = 0
         while not good:
             line = random.randrange(len(HexGameManager.game_database[file]))
-            move = random.randrange(2, len(HexGameManager.game_database[file][line]["moves"]))-1
+            move = random.randrange(1, len(HexGameManager.game_database[file][line]["moves"]))-1
             if move > 0:
                 good = True
         b = HexBoard()
@@ -208,7 +209,11 @@ class HexGameManager:
 
         # Used to get the canonical board. I am not sure though
         # But we want the probabilities for the next player
-        mat2 = HexGameManager.game_database[file][line]["moves"][move+1][0] * b.get_copy_matrix()
+        w = HexGameManager.game_database[file][line]["moves"][move+1][0]
+        if w is not HexGameManager.game_database[file][line]["infos"]["winner"]:
+            w = -w
+
+        mat2 = w * b.get_copy_matrix()
         mat = HexGameManager.game_database[file][line]["moves"][move][0] * mat
 
         v = 0
@@ -221,21 +226,16 @@ class HexGameManager:
             "nb_moves": len(HexGameManager.game_database[file][line]["moves"])
         }
 
-        Params.prt("hex_game_manager.py", "-------------")
-        Params.prt("hex_game_manager.py", str(HexGameManager.game_database[file][line]["infos"]["winner"]))
-        Params.prt("hex_game_manager.py", "Moves")
-        Params.prt("hex_game_manager.py", str(HexGameManager.game_database[file][line]["moves"][move]))
-        Params.prt("hex_game_manager.py", str(HexGameManager.game_database[file][line]["moves"][move + 1]))
-        Params.prt("hex_game_manager.py", "Original :")
-        Params.prt("hex_game_manager.py", str(HexGameManager.game_database[file][line]["moves"][move][0] * mat))
-        Params.prt("hex_game_manager.py", HexGameManager.game_database[file][line]["moves"][move+1][0] * b.get_copy_matrix())
-        Params.prt("hex_game_manager.py", "Altered")
-        Params.prt("hex_game_manager.py", mat)
-        Params.prt("hex_game_manager.py", mat2)
-        Params.prt("hex_game_manager.py", "Infos transmitted")
-        Params.prt("hex_game_manager.py", v)
-        Params.prt("hex_game_manager.py", infos)
-        Params.prt("hex_game_manager.py", "-------------")
         return mat, HexBoard.board_to_array(mat2), v, infos
+
+    def hash_board(self, matrix):
+        zobrist_hash = 0
+
+        for pivot, squares in enumerate(board.occupied_co):
+            for square in chess.scan_reversed(squares):
+                piece_index = (board.piece_type_at(square) - 1) * 2 + pivot
+                zobrist_hash ^= self.array[64 * piece_index + square]
+
+        return zobrist_hash
 
 

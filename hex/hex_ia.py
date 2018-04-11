@@ -22,7 +22,7 @@ args = dotdict({
     'epochs': Params.EPOCS,
     'batch_size': Params.BATCH_SIZE,
     'cuda': Params.CUDA,
-    'num_channels': Params.NUMBER_FILTERS,
+    'num_channels': Params.NUMBER_FILTERS_CN_1,
 })
 
 

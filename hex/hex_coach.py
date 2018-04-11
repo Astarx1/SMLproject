@@ -9,6 +9,10 @@ import time
 import traceback
 
 
+class ConvNetUnableToProduceGame(Exception):
+    pass
+
+
 class HexCoach:
     average_number_moves = []
     average_winner = []
@@ -23,6 +27,7 @@ class HexCoach:
         player = Params.FIRST_PLAYER
 
         i = 0
+        error_count = 0
         while i < Params.NUMBER_GAMES_BATCH:
             try:
                 b = HexBoard()
@@ -62,8 +67,12 @@ class HexCoach:
                 i += 1
             except Exception:
                 traceback.print_exc()
-                time.sleep(1)
+                time.sleep(0.1)
                 Params.log("hex_coach.py", "Failure when creating game")
+
+                error_count += 1
+                if error_count >= Params.SAVING_FROM_CONVERGENCE_TO_ERROR:
+                    raise ConvNetUnableToProduceGame
 
     def trainAI(self, checkpoint=Params.TAKE_FROM_CHECKPOINT):
         j = 0
@@ -131,3 +140,6 @@ class HexCoach:
 
         self.ai.train(moves)
         self.ai.save_checkpoint()
+
+    # def give_checkpoint_name(self):
+

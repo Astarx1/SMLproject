@@ -34,12 +34,15 @@ repeat the process if you have a problem and mail Romain if it doesn't solve the
 TODO :
 In UTC,
 1) Prune parts of the trees where it is impossible to find new children so that the algorithm will not explore these
-parts anymore
+parts anymore - Done
 2) An option which would, for certain games advantage areas which are not recommanded by the p theta :) , but such
 games should not be included in the p-learning process, only for v theta (hard to do ...)
 3) Include in the AI a "It is won" option so that v theta would be 1 if the game is won
 
-1) In Coach : To be able to play against previous versions
+In Coach :
+1) To be able to play against previous versions
 
+In Game Manager :
+1) Zobrist hashes
 BUGS :
 1) In the coach, the UTC often returns -1 as first move. I do not know why...

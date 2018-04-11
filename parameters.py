@@ -10,8 +10,8 @@ class Params:
 
     # UCT
     GAUSSIAN_SIGMA = 0.03
-    RANDOM_FACTOR_CONSTANT = 1
-    EXPLORATION_BONUS = 0.0001
+    RANDOM_FACTOR_CONSTANT = 0
+    EXPLORATION_BONUS = 1
     METHOD_STOP = "time"
     VALUE_STOP = 1.0
     COMPUTE_WIN = False  # Not implemented !
@@ -21,19 +21,23 @@ class Params:
     STANDARD_FORMAT = "advanced"
 
     # Neural Network Parameters
-    NUMBER_FILTERS = 32
+    NUMBER_FILTERS_CN_1 = 128
+    NUMBER_FILTERS_CN_2 = 64
+    NUMBER_FILTERS_CN_3 = 32
+    NUMBER_FILTERS_CN_4 = 16
     CUDA = False
-    BATCH_SIZE = 64
+    BATCH_SIZE = 20
     EPOCS = 20
 
     # Coach Parameters
-    TAKE_FROM_CHECKPOINT = False
+    TAKE_FROM_CHECKPOINT = True
     NN_CHECKPOINT_FOLDER = "checkpoint"
     NN_CHECKPOINT_FILENAME = "checkpoint.pth.tar"
     GAME_SET_METHOD = "maximum"
     RESET_GAMES_AFTER_BATCH = 1  # If GAME_SET_METHOD = "reset"
-    MAXIMUM_GAMES_BATCH = 50  # Id GAME_SET_METHOD = "maximum"
-    NUMBER_GAMES_BATCH = 10  # When the training is run
+    MAXIMUM_GAMES_BATCH = 4  # Id GAME_SET_METHOD = "maximum"
+    NUMBER_GAMES_BATCH = 1  # When the training is run
+    SAVING_FROM_CONVERGENCE_TO_ERROR = 3
 
     @staticmethod
     def get_next_player(player):
