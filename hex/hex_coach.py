@@ -16,6 +16,8 @@ class ConvNetUnableToProduceGame(Exception):
 class HexCoach:
     average_number_moves = []
     average_winner = []
+    rii = 0
+    riis = []
 
     def __init__(self):
         self.last_checkpoint = "checkpoint.pth.tar"
@@ -67,6 +69,8 @@ class HexCoach:
                 args = {"player1": "cnn", "player2": "cnn", "winner": str(w)}
                 HexGameManager.write_add_format_advanced(moves, args, "hex/data/5by5self.dat")
                 i += 1
+                HexCoach.rii = Params.RII_PARAMETER*HexCoach.rii + (1-Params.RII_PARAMETER)*w
+
             except Exception:
                 traceback.print_exc()
                 time.sleep(0.1)
@@ -114,6 +118,12 @@ class HexCoach:
                 traceback.print_exc()
                 Params.log("hex_coach.py", "Impossible to train the neural network")
 
+            try:
+                self.check_infos_size_and_save()
+            except Exception:
+                traceback.print_exc()
+                Params.log("hex_coach.py", "Impossible to check the infos")
+
             j += 1
 
             try:
@@ -121,7 +131,10 @@ class HexCoach:
                            + "/" + str(Params.RESET_GAMES_AFTER_BATCH) + ", average winner : " +
                            str(HexCoach.average_winner[-1]) + ", number of moves : " +
                            str(HexCoach.average_number_moves[-1]) + ", number of learning iter : " +
-                           str(self.training_calls) + ")")
+                           str(self.training_calls) + ", rii : " + str(HexCoach.rii) + ")")
+
+                HexCoach.riis.append(HexCoach.rii)
+
             except:
                 traceback.print_exc()
                 Params.log("hex_coach.py", "Impossible to view round work")
@@ -197,10 +210,27 @@ class HexCoach:
         for v in f:
             ci = self.get_checkpoint_informations(v)
             if ci["valid"] is True:
-                p.append(ci)
+                if (ci["name"] == Params.PREFIX_NAME and ci["board"] == Params.BOARD_VERSION and
+                    ci["utc"] == Params.UTC_VERSION and ci["neural"] == Params.NEURAL_VERSION):
+                    p.append(ci)
         if len(p) > 0:
             return sorted(p, key=lambda x: x["iters"], reverse=True)[0]
         else:
             return None
 
-
+    def check_infos_size_and_save(self):
+        if len(HexCoach.riis) > 1000:
+            HexCoach.riis.pop(0)
+            if len(HexCoach.riis) > 1000:
+                HexCoach.riis.pop(0)
+        if len(HexCoach.average_winner) > 1000:
+            HexCoach.average_winner.pop(0)
+            if len(HexCoach.average_winner) > 1000:
+                HexCoach.average_winner.pop(0)
+        if len(HexCoach.average_number_moves) > 1000:
+            HexCoach.average_number_moves.pop(0)
+            if len(HexCoach.average_number_moves) > 1000:
+                HexCoach.average_number_moves.pop(0)
+        if self.training_calls % Params.SAVE_INFOS is 0:
+            with open(Params.INFOS_FILE, 'a') as f:
+                f.write(str(self.training_calls) + ":" + str(self.rii) + "\n")

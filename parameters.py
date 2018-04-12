@@ -36,6 +36,10 @@ class Params:
     MAXIMUM_GAMES_BATCH = 4  # Id GAME_SET_METHOD = "maximum"
     NUMBER_GAMES_BATCH = 1  # When the training is run
     SAVING_FROM_CONVERGENCE_TO_ERROR = 3
+    RII_PARAMETER = 0.99
+    INFOS_MAX_SIZE = 1000  # To avoid overflow
+    SAVE_INFOS = 40
+    INFOS_FILE = "hex/data/infos.dat"
 
     # Checkpoint storage
     NN_CHECKPOINT_FOLDER = "checkpoint"
@@ -44,7 +48,7 @@ class Params:
     PREFIX_NAME = "check"
     UTC_VERSION = "v1"
     NEURAL_VERSION = "v1"
-    BOARD_VERSION = "b5x5v1"
+    BOARD_VERSION = "b5x5v2"
     SEPARATOR = "_"
     SUFFIX = ".pth.tar"
     WORKING_CHECKPOINT_FILENAME = "working_checkpoint" + SUFFIX
