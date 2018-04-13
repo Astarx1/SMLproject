@@ -62,8 +62,9 @@ class HexBoard(Board):
                 # look if there are neighbors on the same line
                 cur_line.append([])
                 stillSomeNeigh = True
-                neighbors = []
+                # neighbors = []
                 while stillSomeNeigh:
+                    neighbors = []
                     stillSomeNeigh = False
                     for y in cur_line[i - 1]:
                         if y > 0:
@@ -100,8 +101,9 @@ class HexBoard(Board):
 
                 cur_line.append([])
                 stillSomeNeigh = True
-                neighbors = []
+                # neighbors = []
                 while stillSomeNeigh:
+                    neighbors = []
                     stillSomeNeigh = False
                     for x in cur_line[i - 1]:
                         if x > 0:
@@ -109,7 +111,7 @@ class HexBoard(Board):
                                 neighbors.append(x - 1)
                                 stillSomeNeigh = True
                         if x + 1 < BOARD_SIZE:
-                            if self.matrix[i - 1][x + 1] == BLACK and x + 1 not in cur_line[i - 1]:
+                            if self.matrix[x + 1][i - 1] == BLACK and x + 1 not in cur_line[i - 1]:
                                 neighbors.append(x + 1)
                                 stillSomeNeigh = True
                     cur_line[i - 1] = neighbors + cur_line[i - 1]

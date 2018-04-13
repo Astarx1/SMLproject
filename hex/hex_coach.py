@@ -14,8 +14,8 @@ class ConvNetUnableToProduceGame(Exception):
 
 
 class HexCoach:
-    average_number_moves = []
-    average_winner = []
+    average_number_moves = [0]
+    average_winner = [0]
     rii = 0
     riis = []
 
@@ -67,7 +67,7 @@ class HexCoach:
                 Params.log("hex_coach.py", "Ended : " + str(ended))
                 Params.log("hex_coach.py", "Matrix : \n" + str(b.get_copy_matrix()))
                 args = {"player1": "cnn", "player2": "cnn", "winner": str(w)}
-                HexGameManager.write_add_format_advanced(moves, args, "hex/data/5by5self.dat")
+                HexGameManager.write_add_format_advanced(moves, args, Params.STANDARD_GAME_FILE)
                 i += 1
                 HexCoach.rii = Params.RII_PARAMETER*HexCoach.rii + (1-Params.RII_PARAMETER)*w
 
@@ -98,8 +98,8 @@ class HexCoach:
                 if Params.GAME_SET_METHOD is "reset":
                     if j % Params.RESET_GAMES_AFTER_BATCH is 0:
                         import os
-                        if os.path.isfile("hex/data/5by5self.dat"):
-                            os.remove("hex/data/5by5self.dat")
+                        if os.path.isfile(Params.STANDARD_GAME_FILE):
+                            os.remove(Params.STANDARD_GAME_FILE)
                         Params.prt("hex_coach.py", "Games removed")
 
             except Exception:
