@@ -53,6 +53,11 @@ class HexIA(IA):
         pi, v = self.nnet.model.predict(board)
         return pi[0], v[0]
 
+    def get_proba_batch(self, batch):
+        b = np.asarray(batch)
+        pi, v = self.nnet.model.predict(b, batch_size=len(batch))
+        return pi, v
+
     def save_checkpoint(self, folder=Params.NN_CHECKPOINT_FOLDER, filename=Params.WORKING_CHECKPOINT_FILENAME):
         filepath = os.path.join(folder, filename)
 

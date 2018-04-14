@@ -11,7 +11,7 @@ class Params:
     # UCT
     GAUSSIAN_SIGMA = 0.03
     RANDOM_FACTOR_CONSTANT = 0
-    EXPLORATION_BONUS = 1
+    EXPLORATION_BONUS = 0.1
     METHOD_STOP = "time"
     VALUE_STOP = 2.0
     COMPUTE_WIN = False  # Not implemented !
@@ -25,7 +25,7 @@ class Params:
     NUMBER_FILTERS_CN_2 = 49
     NUMBER_FILTERS_CN_3 = 25
     NUMBER_FILTERS_CN_4 = 25
-    CUDA = False
+    CUDA = True
     BATCH_SIZE = 60
     EPOCS = 20
 
