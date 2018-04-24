@@ -13,7 +13,7 @@ class Params:
     RANDOM_FACTOR_CONSTANT = 0
     EXPLORATION_BONUS = 0.1
     METHOD_STOP = "time"
-    VALUE_STOP = 2.0
+    VALUE_STOP = 4.0
     COMPUTE_WIN = False  # Not implemented !
 
     # Games Save
@@ -25,9 +25,9 @@ class Params:
     NUMBER_FILTERS_CN_2 = 49
     NUMBER_FILTERS_CN_3 = 25
     NUMBER_FILTERS_CN_4 = 25
-    CUDA = True
+    CUDA = False
     BATCH_SIZE = 60
-    EPOCS = 20
+    EPOCS = 7
 
     # Coach Parameters
     TAKE_FROM_CHECKPOINT = True
