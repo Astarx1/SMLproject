@@ -66,6 +66,16 @@ class Node:
                     for m in nb:
                         self.add_child((c, m[0], m[1]), self, self.p[self.board.board_size*m[0]+m[1]])
 
+                    boards = []
+
+                    for ch in self.children:
+                        boards.append(ch.get_canonical_matrix())
+
+                    ps, probas = self.ia.get_proba_batch(boards)
+                    for i in range(len(self.children)):
+                        self.children[i].proba = probas[i]
+                        self.children[i].p = ps[i]
+
                     self.update_proba()
                 else:
                     self.ended = True
@@ -86,17 +96,27 @@ class Node:
         else:
             return []
 
+    def get_canonical_matrix(self):
+        moves = self.get_moves_list()
+        # We multiply by self.move[0][0] to get the "canonical board"
+        c = self.color
+        if self.move is not None:
+            c = self.move[0]
+        return c * self.board.get_matrix_play_list(moves)
+
     def compute_ia_proba(self):
         moves = self.get_moves_list()
         # We multiply by self.move[0][0] to get the "canonical board"
         c = self.color
         if self.move is not None:
             c = self.move[0]
+
         self.p, self.proba = self.ia.get_proba(c*self.board.get_matrix_play_list(moves))
 
     def update_proba(self):
         if len(self.children) == 0:
-            self.compute_ia_proba()
+            #self.compute_ia_proba()
+            pass
         else:
             for c in self.children:
                 self.min_max(c.proba)
@@ -140,6 +160,8 @@ class UCT:
         else:'''
 
         self.root = Node(board, self.ia, None, None, -color, 0)
+
+        self.root.p, self.root.proba = self.ia.get_proba(board.matrix)
 
         value_init = self.get_init_value(args)
         value = value_init
