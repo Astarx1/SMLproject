@@ -2,7 +2,7 @@ import sys
 
 
 class Params:
-    BOARD_SIZE = 5
+    BOARD_SIZE = 7
     BLACK = 1
     FIRST_PLAYER = 1
     WHITE = -1
@@ -13,21 +13,21 @@ class Params:
     RANDOM_FACTOR_CONSTANT = 0
     EXPLORATION_BONUS = 1
     METHOD_STOP = "time"
-    VALUE_STOP = 1.0
+    VALUE_STOP = 2.0
     COMPUTE_WIN = False  # Not implemented !
 
     # Games Save
-    STANDARD_GAME_FILE = "hex/data/5by5self.dat"
+    STANDARD_GAME_FILE = "hex/data/7by7self.dat"
     STANDARD_FORMAT = "advanced"
 
     # Neural Network Parameters
-    NUMBER_FILTERS_CN_1 = 128
-    NUMBER_FILTERS_CN_2 = 64
-    NUMBER_FILTERS_CN_3 = 32
-    NUMBER_FILTERS_CN_4 = 16
+    NUMBER_FILTERS_CN_1 = 49
+    NUMBER_FILTERS_CN_2 = 49
+    NUMBER_FILTERS_CN_3 = 25
+    NUMBER_FILTERS_CN_4 = 25
     CUDA = False
     BATCH_SIZE = 60
-    EPOCS = 10
+    EPOCS = 20
 
     # Coach Parameters
     TAKE_FROM_CHECKPOINT = True
@@ -36,6 +36,10 @@ class Params:
     MAXIMUM_GAMES_BATCH = 4  # Id GAME_SET_METHOD = "maximum"
     NUMBER_GAMES_BATCH = 1  # When the training is run
     SAVING_FROM_CONVERGENCE_TO_ERROR = 3
+    RII_PARAMETER = 0.99
+    INFOS_MAX_SIZE = 1000  # To avoid overflow
+    SAVE_INFOS = 10
+    INFOS_FILE = "hex/data/infos7v7.dat"
 
     # Checkpoint storage
     NN_CHECKPOINT_FOLDER = "checkpoint"
@@ -43,8 +47,8 @@ class Params:
     STORE_AFTER = 75  # Put at -1 in order to never create specific checkpoints
     PREFIX_NAME = "check"
     UTC_VERSION = "v1"
-    NEURAL_VERSION = "v1"
-    BOARD_VERSION = "b5x5v1"
+    NEURAL_VERSION = "v2"
+    BOARD_VERSION = "b7x7v2"
     SEPARATOR = "_"
     SUFFIX = ".pth.tar"
     WORKING_CHECKPOINT_FILENAME = "working_checkpoint" + SUFFIX
